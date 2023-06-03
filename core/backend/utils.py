@@ -1,9 +1,10 @@
 import datetime
+import uuid
 from random import randint
 
 from rest_framework.response import Response
 
-from backend.models import Otp
+from backend.models import Otp, Token
 
 
 def send_otp(phone):
@@ -15,3 +16,14 @@ def send_otp(phone):
 
     print(otp)
     return Response('OTP send successfully')
+
+
+def new_token():
+    token = uuid.uuid1().hex
+    return token
+
+
+def token_response(user):
+    token = new_token()
+    Token.objects.create(token=token, user=user)
+    return Response('token ' + token)
