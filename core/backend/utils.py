@@ -4,6 +4,7 @@ from random import randint
 
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
+from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 
 from backend.models import Otp, Token, PasswordResetToken
@@ -83,3 +84,10 @@ def send_password_reset_email(user):
         pass
 
     return Response('reset_password_email_sent')
+
+
+class IsAuthenticatedUser(BasePermission):
+    message = 'unauthenticated_user'
+
+    def has_permission(self, request, view):
+        return bool(request.user)

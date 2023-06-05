@@ -4,12 +4,12 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import get_template
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from backend.models import User, Otp, PasswordResetToken, Token
-from backend.utils import send_otp, token_response, send_password_reset_email
+from backend.utils import send_otp, token_response, send_password_reset_email, IsAuthenticatedUser
 from core.settings import TEMPLATES_BASE_URL
 
 
@@ -151,5 +151,9 @@ def password_reset_confirm(request):
     else:
         return HttpResponse(link_expired)
 
-    print(password2)
-    return Response('updated')
+
+@api_view(['GET'])
+@permission_classes({IsAuthenticatedUser})
+def userdata(request):
+    # todo userdata
+    return Response()

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_wk41pt3r2tqa+at6)gu(0l^m@)*o$)cltp4(q9(_%69#!l_*q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,13 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    "corsheaders",
     'backend',
-    'rest_framework'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -136,6 +138,20 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'developer.prathugupta@gmail.com'
 EMAIL_HOST_PASSWORD = 'h0qp35Exg2aZAbyM'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://10.0.2.2:8000",
+    "http://127.0.0.1:8000",
+]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'backend.authentication.TokenAuthentication',
+    ]
+}
 
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
