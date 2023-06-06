@@ -9,6 +9,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from backend.models import User, Otp, PasswordResetToken, Token
+from backend.serializers import UserSerializer
 from backend.utils import send_otp, token_response, send_password_reset_email, IsAuthenticatedUser
 from core.settings import TEMPLATES_BASE_URL
 
@@ -167,7 +168,8 @@ def password_reset_confirm(request):
 
 
 @api_view(['GET'])
-@permission_classes({IsAuthenticatedUser})
+@permission_classes([IsAuthenticatedUser])
 def userdata(request):
-    # todo userdata
-    return Response()
+    user = request.user
+    data = UserSerializer(user, many=False).data
+    return Response(data)
