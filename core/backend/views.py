@@ -29,6 +29,14 @@ def request_otp(request):
 
 
 @api_view(['POST'])
+def resend_otp(request):
+    phone = request.data.get('phone')
+    if not phone:
+        return Response('data_missing', 400)
+    return send_otp(phone)
+
+
+@api_view(['POST'])
 def verify_otp(request):
     phone = request.data.get('phone')
     otp = request.data.get('otp')
@@ -36,7 +44,7 @@ def verify_otp(request):
     otp_obj = get_object_or_404(Otp, phone=phone, verified=False)
 
     if otp_obj.validity.replace(tzinfo=None) > datetime.datetime.utcnow():
-        if otp_obj.otp == otp:
+        if otp_obj.otp == int(otp):
             otp_obj.verified = True
             otp_obj.save()
             return Response('OTP_verified_successfully')
@@ -57,8 +65,14 @@ def create_account(request):
         otp_obj = get_object_or_404(Otp, phone=phone, verified=True)
         otp_obj.delete()
 
-        User.objects.create(email=email, phone=phone, fullname=fullname, password=make_password(password))
-        return Response("account created_successfully!")
+        user = User()
+        user.email = email
+        user.phone = phone
+        user.phone = phone
+        user.fullname = fullname
+        user.password = make_password(password)
+        user.save()
+        return token_response(user)
 
     else:
         return Response('data_missing', 400)
