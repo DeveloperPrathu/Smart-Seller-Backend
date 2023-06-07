@@ -8,8 +8,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from backend.models import User, Otp, PasswordResetToken, Token
-from backend.serializers import UserSerializer
+from backend.models import User, Otp, PasswordResetToken, Token, Category, Slide
+from backend.serializers import UserSerializer, CategorySerializer, SlideSerializer
 from backend.utils import send_otp, token_response, send_password_reset_email, IsAuthenticatedUser
 from core.settings import TEMPLATES_BASE_URL
 
@@ -172,4 +172,18 @@ def password_reset_confirm(request):
 def userdata(request):
     user = request.user
     data = UserSerializer(user, many=False).data
+    return Response(data)
+
+
+@api_view(['GET'])
+def categories(request):
+    list = Category.objects.all().order_by('position')
+    data = CategorySerializer(list, many=True).data
+    return Response(data)
+
+
+@api_view(['GET'])
+def slides(request):
+    list = Slide.objects.all().order_by('position')
+    data = SlideSerializer(list, many=True).data
     return Response(data)

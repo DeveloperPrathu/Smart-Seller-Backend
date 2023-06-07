@@ -38,3 +38,17 @@ class PasswordResetToken(models.Model):
 
     def __str__(self):
         return self.user.email
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    position = models.IntegerField(default=0)
+    image = models.ImageField(upload_to='categories/')
+
+    def __str__(self):
+        return self.name
+
+
+class Slide(models.Model):
+    position = models.IntegerField(default=0)
+    image = models.ImageField(upload_to='categories/')

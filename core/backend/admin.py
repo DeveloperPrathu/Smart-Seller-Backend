@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import register
 
-from backend.models import User, Otp, Token, PasswordResetToken
+from backend.models import User, Otp, Token, PasswordResetToken, Category, Slide
 
 
 @register(User)
@@ -23,3 +23,13 @@ class TokenAdmin(admin.ModelAdmin):
 @register(PasswordResetToken)
 class PasswordResetTokenAdmin(admin.ModelAdmin):
     list_display = ['token', 'user', 'validity']
+
+
+@register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['name', 'position', 'image']
+
+
+@register(Slide)
+class SlideAdmin(admin.ModelAdmin):
+    list_display = ['position', 'image']
