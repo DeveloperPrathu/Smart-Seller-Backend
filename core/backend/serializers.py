@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from backend.models import User, Category
+from backend.models import User, Category, Product, ProductOption, ProductImage, PageItem
 
 
 class UserSerializer(ModelSerializer):
@@ -19,3 +19,27 @@ class SlideSerializer(ModelSerializer):
     class Meta:
         model = Category
         fields = ['position', 'image']
+
+
+class ProductSerializer(ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['__all__']
+
+
+class ProductOptionSerializer(ModelSerializer):
+    class Meta:
+        model = ProductOption
+        fields = ['__all__']
+
+
+class ProductImageSerializer(ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ['__all__']
+
+
+class PrageItemSerializer(ModelSerializer):
+    class Meta:
+        model = PageItem
+        fields = ['__all__']
