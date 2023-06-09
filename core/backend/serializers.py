@@ -1,3 +1,4 @@
+from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
 from backend.models import User, Category, Product, ProductOption, ProductImage, PageItem
@@ -36,10 +37,26 @@ class ProductOptionSerializer(ModelSerializer):
 class ProductImageSerializer(ModelSerializer):
     class Meta:
         model = ProductImage
-        fields = ['__all__']
+        fields = ['position', 'image', 'product_option']
 
 
-class PrageItemSerializer(ModelSerializer):
+class PageItemSerializer(ModelSerializer):
+    product_options = SerializerMethodField()
+
     class Meta:
         model = PageItem
-        fields = ['__all__']
+        fields = ['id', 'position', 'image', 'category', 'title', 'viewtype', 'product_options']
+
+    def get_product_options(self, obj):
+        options = obj.product_options.all()[:8]
+        data = []
+        for option in options:
+            data.append({
+                'id': option.product.id,
+                'image': ProductImageSerializer(option.images_set.order_by('position').first(), many=False).data.get('image'),
+                'title': option.__str__(),
+                'price': option.product.price,
+                'offer_price': option.product.offer_price
+            })
+
+        return data

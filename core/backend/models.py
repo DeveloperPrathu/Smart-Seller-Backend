@@ -105,7 +105,7 @@ class PageItem(models.Model):
     ]
 
     viewtype = models.IntegerField(choices=choices)
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=50, blank=True)
     product_options = models.ManyToManyField(ProductOption, blank=True)
 
     def __str__(self):

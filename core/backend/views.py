@@ -6,10 +6,11 @@ from django.shortcuts import render
 from django.template.loader import get_template
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
-from backend.models import User, Otp, PasswordResetToken, Token, Category, Slide
-from backend.serializers import UserSerializer, CategorySerializer, SlideSerializer
+from backend.models import User, Otp, PasswordResetToken, Token, Category, Slide, PageItem
+from backend.serializers import UserSerializer, CategorySerializer, SlideSerializer, PageItemSerializer
 from backend.utils import send_otp, token_response, send_password_reset_email, IsAuthenticatedUser
 from core.settings import TEMPLATES_BASE_URL
 
@@ -187,3 +188,18 @@ def slides(request):
     list = Slide.objects.all().order_by('position')
     data = SlideSerializer(list, many=True).data
     return Response(data)
+
+
+@api_view(['GET'])
+def pageitems(request):
+    category = request.GET.get('category')
+
+    pagination = LimitOffsetPagination()
+
+    page_items = PageItem.objects.filter(category=category)
+
+    queryset = pagination.paginate_queryset(page_items, request)
+
+    data = PageItemSerializer(queryset, many=True).data
+
+    return pagination.get_paginated_response(data)

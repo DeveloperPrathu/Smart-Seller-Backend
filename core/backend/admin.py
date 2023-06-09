@@ -28,7 +28,7 @@ class PasswordResetTokenAdmin(admin.ModelAdmin):
 
 @register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'position', 'image']
+    list_display = ['id', 'name', 'position', 'image']
 
 
 @register(Slide)
@@ -61,3 +61,4 @@ class ProductOptionAdmin(admin.ModelAdmin):
 @register(PageItem)
 class PageItemAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'position', 'image', 'category', 'viewtype']
+    filter_horizontal = ['product_options']
