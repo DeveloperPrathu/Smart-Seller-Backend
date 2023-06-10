@@ -13,7 +13,7 @@ class UserSerializer(ModelSerializer):
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
-        fields = ['name', 'position', 'image']
+        fields = ['id', 'name', 'position', 'image']
 
 
 class SlideSerializer(ModelSerializer):
@@ -23,15 +23,27 @@ class SlideSerializer(ModelSerializer):
 
 
 class ProductSerializer(ModelSerializer):
+    options = SerializerMethodField()
     class Meta:
         model = Product
-        fields = ['__all__']
+        fields = ['id', 'title', 'description', 'price', 'offer_price', 'delivery_charge', 'cod', 'star_5', 'star_4', 'star_3', 'star_2', 'star_1', 'options']
+
+    def get_options(self, obj):
+        options = obj.options_set.all()
+        data = ProductOptionSerializer(options, many=True).data
+        return data
 
 
 class ProductOptionSerializer(ModelSerializer):
+    images = SerializerMethodField()
     class Meta:
         model = ProductOption
-        fields = ['__all__']
+        fields = ['id', 'option', 'quantity', 'images']
+
+    def get_images(self, obj):
+        images = obj.images_set.all()
+        data = ProductImageSerializer(images, many=True).data
+        return data
 
 
 class ProductImageSerializer(ModelSerializer):

@@ -9,8 +9,9 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
-from backend.models import User, Otp, PasswordResetToken, Token, Category, Slide, PageItem
-from backend.serializers import UserSerializer, CategorySerializer, SlideSerializer, PageItemSerializer
+from backend.models import User, Otp, PasswordResetToken, Token, Category, Slide, PageItem, Product
+from backend.serializers import UserSerializer, CategorySerializer, SlideSerializer, PageItemSerializer, \
+    ProductSerializer
 from backend.utils import send_otp, token_response, send_password_reset_email, IsAuthenticatedUser
 from core.settings import TEMPLATES_BASE_URL
 
@@ -203,3 +204,11 @@ def pageitems(request):
     data = PageItemSerializer(queryset, many=True).data
 
     return pagination.get_paginated_response(data)
+
+
+@api_view(['GET'])
+def product_details(request):
+    productId = request.GET.get('productId')
+    product = get_object_or_404(Product, id=productId)
+    data = ProductSerializer(product, many=False).data
+    return Response(data)

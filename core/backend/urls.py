@@ -1,7 +1,7 @@
 from django.urls import path
 
 from backend.views import request_otp, verify_otp, create_account, login, password_reset_email, password_reset_form, \
-    password_reset_confirm, userdata, resend_otp, categories, slides, pageitems
+    password_reset_confirm, userdata, resend_otp, categories, slides, pageitems, product_details
 
 urlpatterns = [
     path('request_otp/', request_otp),
@@ -16,4 +16,5 @@ urlpatterns = [
     path('categories/', categories),
     path('slides/', slides),
     path('pageitems/', pageitems),
+    path('product_details/', product_details),
 ]
