@@ -7,7 +7,7 @@ from backend.models import User, Category, Product, ProductOption, ProductImage,
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'phone', 'fullname']
+        fields = ['email', 'phone', 'fullname', 'wishlist', 'cart']
 
 
 class CategorySerializer(ModelSerializer):
