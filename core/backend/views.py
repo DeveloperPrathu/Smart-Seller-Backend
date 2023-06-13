@@ -212,3 +212,39 @@ def product_details(request):
     product = get_object_or_404(Product, id=productId)
     data = ProductSerializer(product, many=False).data
     return Response(data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedUser])
+def update_wishlist(request):
+    id = request.GET.get('id')
+    action = request.GET.get('action')
+    user = request.user
+
+    if action == 'ADD':
+        user.wishlist.add(id)
+        user.save()
+    elif action == 'REMOVE':
+        user = request.user
+        user.wishlist.remove(id)
+        user.save()
+    return Response('Updated')
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedUser])
+def update_cart(request):
+    id = request.GET.get('id')
+    action = request.GET.get('action')
+    user = request.user
+
+    if action == 'ADD':
+        user.cart.add(id)
+        user.save()
+    elif action == 'REMOVE':
+        user = request.user
+        user.cart.remove(id)
+        user.save()
+    return Response('Updated')
+
+
