@@ -37,30 +37,6 @@ def token_response(user):
     return Response('token ' + token)
 
 
-# def send_password_reset_email(user):
-#     token = new_token()
-#     exp_time = datetime.datetime.now() + datetime.timedelta(minutes=10)
-#
-#     PasswordResetToken.objects.update_or_create(user=user, defaults={'user': user, 'token': token, 'validity': exp_time})
-#
-#     email_data = {
-#         'token': token,
-#         'email': user.email,
-#         'base_url': TEMPLATES_BASE_URL
-#     }
-#
-#     message = get_template('emails/reset-password.html').render(email_data)
-#
-#     msg = EmailMessage("Reset Password", body=message, to=[user.email])
-#     msg.content_subtype = 'html'
-#
-#     try:
-#         msg.send()
-#     except:
-#         pass
-#     return Response('reset_password_email_sent')
-
-
 def send_password_reset_email(user):
     token = new_token()
     exp_time = datetime.datetime.now() + datetime.timedelta(minutes=10)

@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from backend.models import User, Otp, PasswordResetToken, Token, Category, Slide, PageItem, Product
 from backend.serializers import UserSerializer, CategorySerializer, SlideSerializer, PageItemSerializer, \
-    ProductSerializer
+    ProductSerializer, WishlistSerializer
 from backend.utils import send_otp, token_response, send_password_reset_email, IsAuthenticatedUser
 from core.settings import TEMPLATES_BASE_URL
 
@@ -225,7 +225,6 @@ def update_wishlist(request):
         user.wishlist.add(id)
         user.save()
     elif action == 'REMOVE':
-        user = request.user
         user.wishlist.remove(id)
         user.save()
     return Response('Updated')
@@ -248,3 +247,9 @@ def update_cart(request):
     return Response('Updated')
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedUser])
+def wishlist(request):
+    _wishlist = request.user.wishlist.all()
+    data = WishlistSerializer(_wishlist, many=True).data
+    return Response(data)

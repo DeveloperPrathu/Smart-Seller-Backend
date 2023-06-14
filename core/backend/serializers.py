@@ -52,6 +52,34 @@ class ProductImageSerializer(ModelSerializer):
         fields = ['position', 'image', 'product_option']
 
 
+class WishlistSerializer(ModelSerializer):
+    id = SerializerMethodField()
+    title = SerializerMethodField()
+    price = SerializerMethodField()
+    offer_price = SerializerMethodField()
+    image = SerializerMethodField()
+
+    def get_id(self, obj):
+        return obj.product.id
+
+    def get_title(self, obj):
+        return obj.__str__()
+
+    def get_price(self, obj):
+        return obj.product.price
+
+    def get_offer_price(self, obj):
+        return obj.product.offer_price
+
+    def get_image(self, obj):
+        return ProductImageSerializer(obj.images_set.order_by('position').first(), many=False).data.get(
+            'image')
+
+    class Meta:
+        model = ProductOption
+        fields = ['id', 'title', 'image', 'price', 'offer_price']
+
+
 class PageItemSerializer(ModelSerializer):
     product_options = SerializerMethodField()
 
