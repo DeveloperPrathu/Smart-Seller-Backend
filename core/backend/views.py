@@ -9,9 +9,9 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
-from backend.models import User, Otp, PasswordResetToken, Token, Category, Slide, PageItem, Product
+from backend.models import User, Otp, PasswordResetToken, Token, Category, Slide, PageItem, Product, ProductOption
 from backend.serializers import UserSerializer, CategorySerializer, SlideSerializer, PageItemSerializer, \
-    ProductSerializer, WishlistSerializer
+    ProductSerializer, WishlistSerializer, CartSerializer
 from backend.utils import send_otp, token_response, send_password_reset_email, IsAuthenticatedUser
 from core.settings import TEMPLATES_BASE_URL
 
@@ -227,7 +227,7 @@ def update_wishlist(request):
     elif action == 'REMOVE':
         user.wishlist.remove(id)
         user.save()
-    return Response('Updated')
+    return Response('updated')
 
 
 @api_view(['GET'])
@@ -241,10 +241,9 @@ def update_cart(request):
         user.cart.add(id)
         user.save()
     elif action == 'REMOVE':
-        user = request.user
         user.cart.remove(id)
         user.save()
-    return Response('Updated')
+    return Response('updated')
 
 
 @api_view(['GET'])
@@ -252,4 +251,18 @@ def update_cart(request):
 def wishlist(request):
     _wishlist = request.user.wishlist.all()
     data = WishlistSerializer(_wishlist, many=True).data
+    return Response(data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedUser])
+def cart(request):
+    id = request.GET.get('id')
+    if id:
+        products = ProductOption.objects.filter(id=id)
+        data = CartSerializer(products, many=True).data
+    else:
+        # load all cart items
+        products = request.user.cart.all()
+        data = CartSerializer(products, many=True).data
     return Response(data)

@@ -50,7 +50,6 @@ class Product(models.Model):
 
 class ProductOption(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    # id = models.UUIDField(primary_key=True, editable=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='options_set')
     option = models.CharField(max_length=50)
     quantity = models.IntegerField(default=0)

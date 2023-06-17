@@ -80,6 +80,21 @@ class WishlistSerializer(ModelSerializer):
         fields = ['id', 'title', 'image', 'price', 'offer_price']
 
 
+class CartSerializer(WishlistSerializer):
+    cod = SerializerMethodField()
+    delivery_charge = SerializerMethodField()
+
+    def get_cod(self, obj):
+        return obj.product.cod
+
+    def get_delivery_charge(self, obj):
+        return obj.product.delivery_charge
+
+    class Meta:
+        model = ProductOption
+        fields = ['id', 'title', 'image', 'price', 'offer_price', 'quantity', 'cod', 'delivery_charge']
+
+
 class PageItemSerializer(ModelSerializer):
     product_options = SerializerMethodField()
 
