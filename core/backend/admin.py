@@ -2,13 +2,25 @@ from django.contrib import admin
 from django.contrib.admin import register
 
 from backend.models import User, Otp, Token, PasswordResetToken, Category, Slide, Product, ProductOption, ProductImage, \
-    PageItem
+    PageItem, OrderedProduct, Order, Notification
 
 
 @register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['id', 'email', 'phone', 'fullname', 'created_at']
-    readonly_fields = ['password']
+    list_display = ['id', 'email', 'phone', 'fullname', 'address', 'pincode', 'created_at']
+    fieldsets = (
+        ('User info', {
+            'fields': ('email', 'phone', 'fullname', 'password',)
+        }),
+        ('Address info', {
+            'fields': ('name', 'address', 'contact_no', 'pincode', 'district', 'state',)
+        }),
+    )
+
+    readonly_fields = ['password', 'email', 'phone', 'fullname', 'name', 'address', 'pincode', 'district', 'state',
+                       'contact_no']
+    search_fields = ['id', 'email', 'phone', 'fullname', 'address', 'pincode']
+    search_help_text = "Search by id,email,phone,fullname,address,pincode"
 
 
 @register(Otp)
@@ -44,7 +56,8 @@ class ProductOptionInline(admin.TabularInline):
 @register(Product)
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductOptionInline]
-    list_display = ['id', 'category', 'title', 'price', 'offer_price', 'delivery_charge', 'cod', 'created_at', 'updated_at']
+    list_display = ['id', 'category', 'title', 'price', 'offer_price', 'delivery_charge', 'cod', 'created_at',
+                    'updated_at']
 
 
 class ProductImageInline(admin.TabularInline):
@@ -62,3 +75,63 @@ class ProductOptionAdmin(admin.ModelAdmin):
 class PageItemAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'position', 'image', 'category', 'viewtype']
     filter_horizontal = ['product_options']
+
+
+@register(OrderedProduct)
+class OrderedProductAdmin(admin.ModelAdmin):
+    list_display = ['id', 'order', 'product_option', 'product_price', 'tx_price', 'delivery_price', 'quantity',
+                    'status', 'rating', 'created_at', 'updated_at']
+    # readonly_fields = ['order','product_option', 'product_price', 'tx_price', 'delivery_price', 'quantity', 'rating']
+    # search_fields = ['id']
+    # search_help_text = "Search by Id"
+    # list_filter = ['status']
+    # ordering = ['-created_at']
+
+    def save_model(self, request, ordered_product, form, change):
+        super(OrderedProductAdmin, self).save_model( request, ordered_product, form, change)
+        user = ordered_product.order.user
+        title = "ORDER "+ordered_product.status
+        body = "Your "+ordered_product.product_option.__str__()+" has been "+ordered_product.status+"."
+        image = ordered_product.product_option.images_set.first().image
+        print("ORDER STATUS: "+title)
+        # send_user_notification(user,title,body,image)
+
+    # def has_add_permission(self, request):
+    #     return False
+
+
+
+class OrderedProductInline(admin.TabularInline):
+    model = OrderedProduct
+    list = ['id', 'product_option', 'product_price', 'tx_price', 'delivery_price', 'quantity', 'status']
+    # readonly_fields = ['product_option', 'product_price', 'tx_price', 'delivery_price', 'quantity', 'status', 'rating']
+    #
+    show_change_link = True
+    #
+    extra = 0
+    #
+    # def has_add_permission(self, request, obj):
+    #     return False
+    #
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
+
+
+@register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    inlines = [OrderedProductInline]
+    list_display = ['id', 'user', 'tx_amount', 'payment_mode', 'address', 'tx_id', 'tx_status', 'tx_time', 'tx_msg',
+                    'from_cart', 'created_at', 'updated_at']
+    # list_filter = ['payment_mode', 'tx_status', 'from_cart']
+    # ordering = ['-created_at']
+    # readonly_fields = ['user', 'tx_amount', 'payment_mode', 'tx_id', 'tx_time', 'tx_msg', 'from_cart']
+    # search_fields = ['id','user__email','address','tx_id', ]
+    # search_help_text = "Search by Id, user, address, tx_id"
+
+    # def has_add_permission(self, request):
+    #     return False
+
+
+@register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'body', 'image', 'seen', 'created_at']

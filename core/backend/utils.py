@@ -1,4 +1,7 @@
+import base64
 import datetime
+import hashlib
+import hmac
 import uuid
 from random import randint
 
@@ -8,7 +11,7 @@ from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 
 from backend.models import Otp, Token, PasswordResetToken
-from core.settings import TEMPLATES_BASE_URL
+from core.settings import TEMPLATES_BASE_URL, CF_KEY
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -67,3 +70,15 @@ class IsAuthenticatedUser(BasePermission):
 
     def has_permission(self, request, view):
         return bool(request.user)
+
+
+def cfSignature(postData):
+    signatureData = postData["orderId"] + postData["orderAmount"] + postData["referenceId"] + postData["txStatus"] + \
+                    postData["paymentMode"] + postData["txMsg"] + postData["txTime"]
+
+    message = bytes(signatureData, encoding='utf8')
+    secret = bytes(CF_KEY, encoding='utf8')
+    signature = base64.b64encode(hmac.new(secret,
+                                          message, digestmod=hashlib.sha256).digest())
+
+    return signature

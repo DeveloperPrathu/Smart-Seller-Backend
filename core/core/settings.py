@@ -144,7 +144,7 @@ EMAIL_HOST_PASSWORD = 'h0qp35Exg2aZAbyM'
 
 CORS_ALLOWED_ORIGINS = [
     "http://192.168.29.121:8000",
-    # "http://10.0.2.2:8000",
+    "http://10.0.2.2:8000",
     "http://127.0.0.1:8000",
 ]
 
@@ -157,11 +157,5 @@ REST_FRAMEWORK = {
     ]
 }
 
-
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.sparkpostmail.com'
-# EMAIL_USE_TLS = True
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'SMTP_Injection'
-# EMAIL_HOST_PASSWORD = '4476d00b39fe28147b8049eefaecbcc0e058072f'
-
+CF_ID = 'TEST35392141849cebd2a02b9be087129353'
+CF_KEY = 'TEST1364a0742f4caf492c88f4c6c98d5dfb045e13cc'
